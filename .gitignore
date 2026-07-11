@@ -1,0 +1,24 @@
+# Local Python environment and caches
+.venv/
+__pycache__/
+*.py[cod]
+
+# Local secrets
+.env
+.env.*
+!.env.example
+secrets/
+
+# Private analytics exports and generated datasets
+*.xlsx
+*.xls
+*.csv
+
+# Generated reports
+reports/generated/
+
+# Editor and operating-system files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
