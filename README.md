@@ -41,6 +41,15 @@ python3 -m venv .venv
 каждой партии, поэтому длительный аудит можно безопасно продолжить после
 остановки.
 
+Анализ текущего сохранённого результата:
+
+```bash
+.venv/bin/python scripts/analyze_crawl_results.py \
+  reports/generated/seo_filters_full.csv.gz \
+  --summary reports/generated/seo_filters_analysis.json \
+  --issues reports/generated/seo_filters_issues.csv.gz
+```
+
 Результаты команд сохраняются в `reports/generated/` и не коммитятся.
 Выводы, прошедшие проверку, оформляются отдельными Markdown-отчётами в
 `reports/`.
