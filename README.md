@@ -22,6 +22,22 @@ python3 -m venv .venv
 .venv/bin/python scripts/audit_rendering.py
 ```
 
+Локальный Lighthouse через установленный Chrome:
+
+```bash
+npm install
+npx --no-install lighthouse https://restomoda.ru/ \
+  --chrome-path=/usr/bin/google-chrome \
+  --output=json \
+  --output-path=reports/generated/lighthouse/home-mobile.json \
+  --quiet \
+  --chrome-flags='--headless --no-sandbox --disable-dev-shm-usage' \
+  --only-categories=performance,seo,best-practices,accessibility \
+  --form-factor=mobile
+
+.venv/bin/python scripts/analyze_lighthouse_results.py
+```
+
 Для длительного возобновляемого обхода SEO-фильтров:
 
 ```bash
@@ -57,4 +73,5 @@ python3 -m venv .venv
 Текущие отчёты:
 
 - `reports/2026-07-11-initial-technical-audit.md`;
-- `reports/2026-07-11-seo-filter-full-audit.md`.
+- `reports/2026-07-11-seo-filter-full-audit.md`;
+- `reports/2026-07-11-lighthouse-audit.md`.

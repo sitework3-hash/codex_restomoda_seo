@@ -3,6 +3,10 @@
 __pycache__/
 *.py[cod]
 
+# Local Node.js audit tools
+node_modules/
+.lighthouseci/
+
 # Local secrets
 .env
 .env.*

@@ -1,0 +1,8 @@
+{
+  "name": "restomoda-seo-audit",
+  "private": true,
+  "description": "Local technical SEO audit tools for restomoda.ru",
+  "devDependencies": {
+    "lighthouse": "13.4.0"
+  }
+}
