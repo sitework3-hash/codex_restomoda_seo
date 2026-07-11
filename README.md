@@ -53,3 +53,8 @@ python3 -m venv .venv
 Результаты команд сохраняются в `reports/generated/` и не коммитятся.
 Выводы, прошедшие проверку, оформляются отдельными Markdown-отчётами в
 `reports/`.
+
+Текущие отчёты:
+
+- `reports/2026-07-11-initial-technical-audit.md`;
+- `reports/2026-07-11-seo-filter-full-audit.md`.
