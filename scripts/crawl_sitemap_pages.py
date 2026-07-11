@@ -80,6 +80,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--requests-per-second", type=float, default=5.0)
     parser.add_argument("--timeout", type=float, default=30.0)
     parser.add_argument("--seed", type=int, default=20260711)
+    parser.add_argument(
+        "--source-contains",
+        action="append",
+        default=[],
+        help="Keep rows whose source_sitemap contains any supplied value",
+    )
+    parser.add_argument("--batch-size", type=int, default=500)
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="Append only URLs that are not already present in the output",
+    )
     return parser.parse_args()
 
 
@@ -367,15 +379,86 @@ def build_summary(results: list[CrawlResult], args: argparse.Namespace) -> dict[
     }
 
 
+def result_from_row(row: dict[str, str]) -> CrawlResult:
+    integer_fields = {
+        "status",
+        "redirect_count",
+        "response_bytes",
+        "response_ms",
+        "title_length",
+        "description_length",
+        "h1_count",
+        "text_length",
+        "internal_links",
+        "external_links",
+    }
+    boolean_fields = {"noindex", "soft_404_hint"}
+    nullable_boolean_fields = {"canonical_is_self"}
+    values: dict[str, Any] = {}
+    for key, value in row.items():
+        if key in integer_fields:
+            values[key] = int(value) if value else None if key == "status" else 0
+        elif key in boolean_fields:
+            values[key] = value.lower() == "true"
+        elif key in nullable_boolean_fields:
+            values[key] = None if not value else value.lower() == "true"
+        else:
+            values[key] = value
+    return CrawlResult(**values)
+
+
+def read_existing_results(path: Path) -> list[CrawlResult]:
+    if not path.exists():
+        return []
+    opener = gzip.open if path.suffix == ".gz" else open
+    with opener(path, "rt", encoding="utf-8", newline="") as handle:
+        return [result_from_row(row) for row in csv.DictReader(handle)]
+
+
+def append_results(path: Path, results: list[CrawlResult], include_header: bool) -> None:
+    opener = gzip.open if path.suffix == ".gz" else open
+    mode = "wt" if include_header else "at"
+    with opener(path, mode, encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(asdict(results[0]).keys()))
+        if include_header:
+            writer.writeheader()
+        writer.writerows(asdict(item) for item in results)
+
+
 def main() -> None:
     args = parse_args()
-    rows = stratified_sample(read_unique_rows(args.input), args.limit, args.seed)
-    results = asyncio.run(crawl(args, rows))
+    rows = read_unique_rows(args.input)
+    if args.source_contains:
+        rows = [
+            row
+            for row in rows
+            if any(value in row["source_sitemap"] for value in args.source_contains)
+        ]
+    rows = stratified_sample(rows, args.limit, args.seed)
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    with gzip.open(args.output, "wt", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(asdict(results[0]).keys()))
-        writer.writeheader()
-        writer.writerows(asdict(item) for item in results)
+    existing_results = read_existing_results(args.output) if args.resume else []
+    completed_urls = {item.url for item in existing_results}
+    pending_rows = [row for row in rows if row["url"] not in completed_urls]
+    results = list(existing_results)
+    print(
+        f"Selected {len(rows)} URLs; completed {len(existing_results)}; "
+        f"pending {len(pending_rows)}",
+        flush=True,
+    )
+    batch_size = max(1, args.batch_size)
+    wrote_header = bool(existing_results)
+    for start in range(0, len(pending_rows), batch_size):
+        batch_rows = pending_rows[start : start + batch_size]
+        batch_results = asyncio.run(crawl(args, batch_rows))
+        append_results(args.output, batch_results, include_header=not wrote_header)
+        wrote_header = True
+        results.extend(batch_results)
+        print(
+            f"Saved progress {len(results)}/{len(rows)} to {args.output}",
+            flush=True,
+        )
+    if not results:
+        raise SystemExit("No URLs matched the supplied filters")
     summary = build_summary(results, args)
     args.summary.write_text(
         json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"

@@ -22,6 +22,25 @@ python3 -m venv .venv
 .venv/bin/python scripts/audit_rendering.py
 ```
 
+Для длительного возобновляемого обхода SEO-фильтров:
+
+```bash
+.venv/bin/python scripts/crawl_sitemap_pages.py \
+  --limit 0 \
+  --source-contains sitemap_sotbit \
+  --source-contains sitemap_seometa \
+  --concurrency 5 \
+  --requests-per-second 5 \
+  --batch-size 250 \
+  --resume \
+  --output reports/generated/seo_filters_full.csv.gz \
+  --summary reports/generated/seo_filters_full_summary.json
+```
+
+Флаг `--resume` пропускает уже сохранённые URL. Прогресс записывается после
+каждой партии, поэтому длительный аудит можно безопасно продолжить после
+остановки.
+
 Результаты команд сохраняются в `reports/generated/` и не коммитятся.
 Выводы, прошедшие проверку, оформляются отдельными Markdown-отчётами в
 `reports/`.
