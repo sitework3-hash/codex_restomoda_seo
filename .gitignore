@@ -14,6 +14,8 @@ node_modules/
 secrets/
 
 # Private analytics exports and generated datasets
+data_for_audit/
+.data_for_audit_upload_readonly/
 *.xlsx
 *.xls
 *.csv

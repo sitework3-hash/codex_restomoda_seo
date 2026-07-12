@@ -12,10 +12,14 @@ python3 -m venv .venv
 Исходные выгрузки Excel/CSV и автоматически созданные наборы данных исключены
 из Git. Они должны оставаться только в защищённой рабочей среде.
 
+Все сырые данные Restomoda хранятся в `data_for_audit/`: выгрузки поисковых
+систем, снимки экранов, архивы кода и другие исходные материалы. Папка целиком
+исключена из Git. В корне проекта остаются только код, документация и отчёты.
+
 ## Команды
 
 ```bash
-.venv/bin/python scripts/analyze_search_exports.py
+.venv/bin/python scripts/analyze_search_exports.py --data-dir data_for_audit
 .venv/bin/python scripts/audit_sitemaps.py
 .venv/bin/python scripts/crawl_sitemap_pages.py --limit 2000 \
   --concurrency 5 --requests-per-second 5

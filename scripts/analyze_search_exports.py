@@ -14,6 +14,7 @@ import pandas as pd
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--data-dir", type=Path, default=Path("data_for_audit"))
     parser.add_argument("--gsc", type=Path)
     parser.add_argument("--metrika", type=Path)
     parser.add_argument(
@@ -22,10 +23,12 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def find_one(pattern: str) -> Path:
-    matches = sorted(Path(".").glob(pattern))
+def find_one(directory: Path, pattern: str) -> Path:
+    matches = sorted(directory.glob(pattern))
     if len(matches) != 1:
-        raise SystemExit(f"Expected one file for {pattern!r}, found {len(matches)}")
+        raise SystemExit(
+            f"Expected one file for {pattern!r} in {directory}, found {len(matches)}"
+        )
     return matches[0]
 
 
@@ -116,8 +119,8 @@ def opportunity_rows(frame: pd.DataFrame, limit: int = 30) -> list[dict[str, Any
 def main() -> None:
     warnings.filterwarnings("ignore", message="Workbook contains no default style")
     args = parse_args()
-    gsc_path = args.gsc or find_one("*Google-Search*.xlsx")
-    metrika_path = args.metrika or find_one("*metrika*.xlsx")
+    gsc_path = args.gsc or find_one(args.data_dir, "*Google-Search*.xlsx")
+    metrika_path = args.metrika or find_one(args.data_dir, "*metrika*.xlsx")
 
     daily = gsc_sheet(gsc_path, "Диаграмма")
     daily["Дата"] = pd.to_datetime(daily["Дата"])
