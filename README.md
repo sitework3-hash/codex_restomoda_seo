@@ -20,10 +20,24 @@ python3 -m venv .venv
 
 ```bash
 .venv/bin/python scripts/analyze_search_exports.py --data-dir data_for_audit
+.venv/bin/python scripts/analyze_indexing_exports.py --data-dir data_for_audit
 .venv/bin/python scripts/audit_sitemaps.py
 .venv/bin/python scripts/crawl_sitemap_pages.py --limit 2000 \
   --concurrency 5 --requests-per-second 5
 .venv/bin/python scripts/audit_rendering.py
+```
+
+Статическая проверка правил перенаправления в сохранённом `.htaccess`:
+
+```bash
+.venv/bin/python scripts/verify_htaccess_redirects.py
+```
+
+Для щадящей проверки найденных целей на публичном сайте (HEAD, по умолчанию
+не более пяти запросов в секунду):
+
+```bash
+.venv/bin/python scripts/verify_htaccess_redirects.py --verify
 ```
 
 Локальный Lighthouse через установленный Chrome:
@@ -78,4 +92,5 @@ npx --no-install lighthouse https://restomoda.ru/ \
 
 - `reports/2026-07-11-initial-technical-audit.md`;
 - `reports/2026-07-11-seo-filter-full-audit.md`;
-- `reports/2026-07-11-lighthouse-audit.md`.
+- `reports/2026-07-11-lighthouse-audit.md`;
+- `reports/2026-07-12-indexing-and-code-audit.md`.
