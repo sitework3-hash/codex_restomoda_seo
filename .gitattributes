@@ -1,0 +1,4 @@
+# Patch files preserve the source snapshot's mixed LF/CRLF endings so they can
+# be applied byte-for-byte to the Bitrix files. Treat them as binary in Git to
+# prevent line-ending normalization and false whitespace warnings.
+remediation/2026-07-12-p0/*.patch binary

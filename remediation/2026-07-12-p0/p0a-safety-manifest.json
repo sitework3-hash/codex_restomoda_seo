@@ -1,0 +1,28 @@
+{
+  "site_root": "data_for_audit/site_code",
+  "scope": "safety",
+  "dry_run": true,
+  "changed_files": [
+    "local/templates/aspro_next/header.php",
+    "local/php_interface/init.php"
+  ],
+  "changes": {
+    "remove_dynamic_last_modified": 1,
+    "remove_plaintext_password_from_order_comment": 1
+  },
+  "verified_redirect_fixes": [],
+  "blocked_brand_redirect_candidates": [],
+  "manual_items": [
+    {
+      "source": "/info/brands/amitek/?section_id=1077",
+      "current_target": "/catalog/professionalnyy-slayser-dlya-narezki-produktov/amitek/",
+      "reason": "active redirects.php target is 404; no equivalent landing is present in sitemap"
+    },
+    {
+      "reason": "server 5xx and robots.txt outages require access/error logs before code changes"
+    },
+    {
+      "reason": "sitemap generation is controlled by Bitrix/module configuration absent from the snapshot"
+    }
+  ]
+}

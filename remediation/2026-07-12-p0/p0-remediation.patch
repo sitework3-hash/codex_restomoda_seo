@@ -1,0 +1,401 @@
+--- a/local/templates/aspro_next/header.php
++++ b/local/templates/aspro_next/header.php
+@@ -28,7 +28,6 @@
+ }
+ ?>
+ 
+-<?header('Last-Modified: '.gmdate('D, d M Y H:i:s T', time() - 60));?>
+     <!DOCTYPE html>
+ <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?=LANGUAGE_ID?>" lang="<?=LANGUAGE_ID?>" <?=($htmlClass ? 'class="'.$htmlClass.'"' : '')?>>
+     <head>
+@@ -94,21 +93,45 @@
+         $APPLICATION->ShowHeadScripts();
+         ?>
+ 
+-        <?$APPLICATION->ShowMeta('canonical')?>
+-
+         <?
+-        if ($_REQUEST['PAGEN_1']) {
+-            global $APPLICATION;
+-            $APPLICATION->AddHeadString('<link href="https://'.$_SERVER['HTTP_HOST'].$APPLICATION->sDirPath.'" rel="canonical" />',true);
++        // Единственный серверный canonical. Для валидной пагинации сохраняем
++        // только параметры PAGEN_N; сортировки и служебные параметры исключаем.
++        $canonicalPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
++        if (!is_string($canonicalPath) || $canonicalPath === '') {
++            $canonicalPath = '/';
++        }
++        if ($canonicalPath[0] !== '/') {
++            $canonicalPath = '/'.$canonicalPath;
++        }
++
++        $canonicalPagination = [];
++        foreach ($_GET as $key => $value) {
++            if (
++                preg_match('/^PAGEN_\d+$/', (string)$key)
++                && is_scalar($value)
++                && ctype_digit((string)$value)
++                && (int)$value > 1
++            ) {
++                $canonicalPagination[(string)$key] = (int)$value;
++            }
++        }
++        ksort($canonicalPagination, SORT_NATURAL);
++
++        $canonicalUrl = 'https://restomoda.ru'.$canonicalPath;
++        if ($canonicalPagination) {
++            $canonicalUrl .= '?'.http_build_query(
++                $canonicalPagination,
++                '',
++                '&',
++                PHP_QUERY_RFC3986
++            );
+         }
+         ?>
+-
+-        <?
+-        if ( !isset($_REQUEST['PAGEN_1'])) { // CSite::InDir('/info/brands/') && ?>
+-            <link href="<?=$APPLICATION->GetCurDir();?>" rel="canonical" />
+-        <?
+-        }
+-        ?>
++        <link rel="canonical" href="<?=htmlspecialchars(
++            $canonicalUrl,
++            ENT_QUOTES | ENT_SUBSTITUTE,
++            LANG_CHARSET
++        )?>" />
+ 
+ 
+         <?$APPLICATION->SetAdditionalCSS(SITE_TEMPLATE_PATH.'/css/lightbox.css');?>
+--- a/local/php_interface/init.php
++++ b/local/php_interface/init.php
+@@ -1448,7 +1448,8 @@
+                 "Данные нового пользователя:\n" .
+                 "  ID: {$finalUserId}\n" .
+                 "  Логин: {$newLogin}\n" .
+-                "  Пароль: {$newPassword}\n\n";
++                "  Пароль не сохраняется. Для доступа используйте " .
++                "штатное восстановление пароля.\n\n";
+         } else {
+             // Если создать пользователя не удалось — падаем на администратора
+             $finalUserId = $adminUserId;
+--- a/local/templates/aspro_next/footer.php
++++ b/local/templates/aspro_next/footer.php
+@@ -163,13 +163,6 @@
+                 $('.ul-list-menu').toggleClass('open');
+             });
+ 
+-            // Canonical
+-            let metaCanonical = $('meta[name="canonical"]').attr("content");
+-            if (metaCanonical) {
+-                $('link[rel="canonical"]').attr("href", metaCanonical);
+-            }
+-            console.log(metaCanonical);
+-
+             // Цели Яндекс.Метрики
+             $('.btn.one_click').click(function () {
+                 if (typeof ym === 'function') {
+--- a/local/templates/aspro_next/components/bitrix/system.pagenavigation/.default/template.php
++++ b/local/templates/aspro_next/components/bitrix/system.pagenavigation/.default/template.php
+@@ -50,7 +50,6 @@
+ 					$url = ($page ? '?'.$strNavQueryString.'PAGEN_'.$arResult["NavNum"].'='.$page : $strNavQueryStringFull);?>
+ 					<li class="flex-nav-prev "><a href="<?=$arResult["sUrlPath"]?><?=$url?>" class="flex-prev"></a></li>
+ 					<link rel="prev" href="<?=$arResult["sUrlPath"].$url?>" />
+-					<link rel="canonical" href="<?=$arResult["sUrlPath"]?>" />
+ 				<?endif;?>
+ 				<?if(!$bNextDisabled):?>
+ 					<li class="flex-nav-next "><a href="<?=$arResult["sUrlPath"]?>?<?=$strNavQueryString?>PAGEN_<?=$arResult["NavNum"]?>=<?=($arResult["NavPageNomer"]+1)?>" class="flex-next"></a></li>
+--- a/.htaccess
++++ b/.htaccess
+@@ -2463,202 +2463,202 @@
+ 	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/farshemesy/hualian/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/pechi-podovye-hlebopekarnye/brand_voskhod/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/pechi-podovye-hlebopekarnye/foodatlas/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/pechi-podovye-hlebopekarnye/voskhod/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/pechi-podovye-hlebopekarnye/brand_miratek/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/pechi-podovye-hlebopekarnye/ar/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/pechi-podovye-hlebopekarnye/miratek/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/pechi-podovye-hlebopekarnye/brand_unox/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/pechi-podovye-hlebopekarnye/voskhod/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/pechi-podovye-hlebopekarnye/unox/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/pechi-podovye-hlebopekarnye/brand_resto-italia/$
+ 	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/pechi-podovye-hlebopekarnye/miratek/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/pechi-podovye-hlebopekarnye/brand_abat/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/pechi-podovye-hlebopekarnye/unox/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/pechi-podovye-hlebopekarnye/abat/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/khlebopekarnye-yarusnye-pechi/brand_tulatorgtekhnika/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/rotacionnye-pechi/kocateq/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/khlebopekarnye-yarusnye-pechi/tulatorgtekhnika/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/khlebopekarnye-yarusnye-pechi/brand_marikholodmash/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/rotacionnye-pechi/wlbake/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/khlebopekarnye-yarusnye-pechi/marikholodmash/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_eksi/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/bartscher/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/eksi/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_starfood/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/gastrorag/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/starfood/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_hurakan/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/eksi/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/hurakan/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_viatto/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/starfood/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/viatto/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_mec/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/hurakan/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/mec/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_sirman/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/viatto/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/sirman/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_enigma/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/mec/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/enigma/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_amitek/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/sirman/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/amitek/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_fimar/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/enigma/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/fimar/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_foodatlas/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/amitek/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/foodatlas/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_roller-grill/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/fimar/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/roller-grill/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_waring/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/foodatlas/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/waring/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_fiamma/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/roller-grill/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/fiamma/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_vortmax/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/waring/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/vortmax/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_kocateq/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/fiamma/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/kocateq/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_master-lee/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/vortmax/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/master-lee/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_airhot/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/kocateq/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/airhot/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_inoksan/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/master-lee/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/inoksan/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_tecnoinox/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/airhot/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/tecnoinox/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_lincat/$
+ 	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/inoksan/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_hatco/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/tecnoinox/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/hatco/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_prince-castle/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/lincat/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/prince-castle/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-vertikalnye/brand_eksi/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-vertikalnye/bartscher/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-vertikalnye/eksi/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-vertikalnye/brand_starfood/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-vertikalnye/gastrorag/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-vertikalnye/starfood/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-vertikalnye/brand_hurakan/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-vertikalnye/eksi/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-vertikalnye/hurakan/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-vertikalnye/brand_viatto/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-vertikalnye/starfood/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-vertikalnye/viatto/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-vertikalnye/brand_waring/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-vertikalnye/hurakan/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-vertikalnye/waring/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-vertikalnye/brand_airhot/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-vertikalnye/viatto/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-vertikalnye/airhot/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-vertikalnye/brand_lincat/$
+ 	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-vertikalnye/waring/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-gorizontalnye/brand_mec/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/gastrorag/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/mec/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-gorizontalnye/brand_bartscher/$
+ 	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/hurakan/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-gorizontalnye/brand_sirman/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/mec/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/sirman/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-gorizontalnye/brand_enigma/$
+ 	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/bartscher/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-gorizontalnye/brand_amitek/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/sirman/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/amitek/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-gorizontalnye/brand_fimar/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/enigma/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/fimar/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-gorizontalnye/brand_foodatlas/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/amitek/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/foodatlas/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-gorizontalnye/brand_roller-grill/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/fimar/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/roller-grill/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-gorizontalnye/brand_fiamma/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/foodatlas/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/fiamma/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-gorizontalnye/brand_vortmax/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/roller-grill/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/vortmax/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-gorizontalnye/brand_tecnoinox/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/fiamma/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/tecnoinox/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-gorizontalnye/brand_prince-castle/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/vortmax/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/prince-castle/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-gorizontalnye/brand_viatto/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/tecnoinox/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-gorizontalnye/viatto/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-konveyernye/brand_enigma/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/gastrorag/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/enigma/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-konveyernye/brand_master-lee/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/kocateq/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/master-lee/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-konveyernye/brand_hurakan/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/enigma/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/hurakan/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-konveyernye/brand_airhot/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/master-lee/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/airhot/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-konveyernye/brand_eksi/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/hurakan/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/eksi/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-konveyernye/brand_bartscher/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/airhot/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/bartscher/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-konveyernye/brand_vortmax/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/eksi/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/vortmax/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-konveyernye/brand_starfood/$
+ 	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/bartscher/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-konveyernye/brand_inoksan/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/vortmax/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/inoksan/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-konveyernye/brand_sirman/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/starfood/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/sirman/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-konveyernye/brand_waring/$
+ 	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/inoksan/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-konveyernye/brand_roller-grill/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/sirman/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/roller-grill/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-konveyernye/brand_lincat/$
+ 	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/waring/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-konveyernye/brand_hatco/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/roller-grill/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/hatco/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-konveyernye/brand_prince-castle/$
+ 	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-konveyernye/lincat/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/vapo-grili/brand_arris/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/vapo-grili/vortmax/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/vapo-grili/arris/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/vapo-grili/brand_vulkan/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/vapo-grili/apach/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/vapo-grili/vulkan/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/pechi-khlebopekarnye/brand_foodatlas/$
+ 	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/vapo-grili/arris/ [R=301,L]
+@@ -3843,10 +3843,10 @@
+ 	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/pechi-podovye-hlebopekarnye/kocateq/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/rotacionnye-pechi/brand_kocateq/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/pechi-podovye-hlebopekarnye/kocateq/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/rotacionnye-pechi/kocateq/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/rotacionnye-pechi/brand_wlbake/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/pechi-podovye-hlebopekarnye/wlbake/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/rotacionnye-pechi/wlbake/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/khlebopekarnye-yarusnye-pechi/brand_abat/$
+ 	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/khlebopekarnye-yarusnye-pechi/abat/ [R=301,L]
+@@ -3867,16 +3867,16 @@
+ 	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/khlebopekarnye-yarusnye-pechi/stangrad/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_bartscher/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/khlebopekarnye-yarusnye-pechi/bartscher/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/bartscher/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_gastrorag/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/pechi-khlebopekarnye-konveyernye/gastrorag/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/gastrorag/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-professionalnye/brand_sikom/$
+ 	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/sikom/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/tostery-vertikalnye/brand_bartscher/$
+-	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-professionalnye/bartscher/ [R=301,L]
++	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/tostery-vertikalnye/bartscher/ [R=301,L]
+ 
+ 	RewriteCond %{REQUEST_URI} ^/catalog/testomesilnye-mashiny-professionalnye/brand_torgmash-perm/$
+ 	RewriteRule (.*)  https://%{SERVER_NAME}/catalog/testomesilnye-mashiny-professionalnye/torgmash/ [R=301,L]

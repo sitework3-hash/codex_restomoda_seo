@@ -40,6 +40,21 @@ python3 -m venv .venv
 .venv/bin/python scripts/verify_htaccess_redirects.py --verify
 ```
 
+Сборка проверенного P0-пакета для тестовой копии без изменения исходников:
+
+```bash
+.venv/bin/python scripts/build_p0_remediation.py
+```
+
+Инструкция, фазовые patch-файлы и результаты проверки находятся в
+`remediation/2026-07-12-p0/`.
+
+Внешняя проверка после staging/production-выкладки:
+
+```bash
+.venv/bin/python scripts/verify_p0_deployment.py
+```
+
 Локальный Lighthouse через установленный Chrome:
 
 ```bash

@@ -1,0 +1,514 @@
+{
+  "site_root": "data_for_audit/site_code",
+  "scope": "all",
+  "dry_run": true,
+  "changed_files": [
+    "local/templates/aspro_next/header.php",
+    "local/php_interface/init.php",
+    "local/templates/aspro_next/footer.php",
+    "local/templates/aspro_next/components/bitrix/system.pagenavigation/.default/template.php",
+    ".htaccess"
+  ],
+  "changes": {
+    "remove_dynamic_last_modified": 1,
+    "remove_plaintext_password_from_order_comment": 1,
+    "single_server_canonical_with_pagination": 1,
+    "remove_dead_canonical_javascript": 1,
+    "remove_body_canonical_from_default_pagination": 1,
+    "verified_brand_redirect_fixes": 62
+  },
+  "verified_redirect_fixes": [
+    {
+      "line": 2465,
+      "source": "/catalog/pechi-podovye-hlebopekarnye/brand_voskhod/",
+      "current_target": "/catalog/pechi-podovye-hlebopekarnye/foodatlas/",
+      "new_target": "/catalog/pechi-podovye-hlebopekarnye/voskhod/"
+    },
+    {
+      "line": 2468,
+      "source": "/catalog/pechi-podovye-hlebopekarnye/brand_miratek/",
+      "current_target": "/catalog/pechi-podovye-hlebopekarnye/ar/",
+      "new_target": "/catalog/pechi-podovye-hlebopekarnye/miratek/"
+    },
+    {
+      "line": 2471,
+      "source": "/catalog/pechi-podovye-hlebopekarnye/brand_unox/",
+      "current_target": "/catalog/pechi-podovye-hlebopekarnye/voskhod/",
+      "new_target": "/catalog/pechi-podovye-hlebopekarnye/unox/"
+    },
+    {
+      "line": 2477,
+      "source": "/catalog/pechi-podovye-hlebopekarnye/brand_abat/",
+      "current_target": "/catalog/pechi-podovye-hlebopekarnye/unox/",
+      "new_target": "/catalog/pechi-podovye-hlebopekarnye/abat/"
+    },
+    {
+      "line": 2480,
+      "source": "/catalog/khlebopekarnye-yarusnye-pechi/brand_tulatorgtekhnika/",
+      "current_target": "/catalog/rotacionnye-pechi/kocateq/",
+      "new_target": "/catalog/khlebopekarnye-yarusnye-pechi/tulatorgtekhnika/"
+    },
+    {
+      "line": 2483,
+      "source": "/catalog/khlebopekarnye-yarusnye-pechi/brand_marikholodmash/",
+      "current_target": "/catalog/rotacionnye-pechi/wlbake/",
+      "new_target": "/catalog/khlebopekarnye-yarusnye-pechi/marikholodmash/"
+    },
+    {
+      "line": 2486,
+      "source": "/catalog/tostery-professionalnye/brand_eksi/",
+      "current_target": "/catalog/tostery-professionalnye/bartscher/",
+      "new_target": "/catalog/tostery-professionalnye/eksi/"
+    },
+    {
+      "line": 2489,
+      "source": "/catalog/tostery-professionalnye/brand_starfood/",
+      "current_target": "/catalog/tostery-professionalnye/gastrorag/",
+      "new_target": "/catalog/tostery-professionalnye/starfood/"
+    },
+    {
+      "line": 2492,
+      "source": "/catalog/tostery-professionalnye/brand_hurakan/",
+      "current_target": "/catalog/tostery-professionalnye/eksi/",
+      "new_target": "/catalog/tostery-professionalnye/hurakan/"
+    },
+    {
+      "line": 2495,
+      "source": "/catalog/tostery-professionalnye/brand_viatto/",
+      "current_target": "/catalog/tostery-professionalnye/starfood/",
+      "new_target": "/catalog/tostery-professionalnye/viatto/"
+    },
+    {
+      "line": 2498,
+      "source": "/catalog/tostery-professionalnye/brand_mec/",
+      "current_target": "/catalog/tostery-professionalnye/hurakan/",
+      "new_target": "/catalog/tostery-professionalnye/mec/"
+    },
+    {
+      "line": 2501,
+      "source": "/catalog/tostery-professionalnye/brand_sirman/",
+      "current_target": "/catalog/tostery-professionalnye/viatto/",
+      "new_target": "/catalog/tostery-professionalnye/sirman/"
+    },
+    {
+      "line": 2504,
+      "source": "/catalog/tostery-professionalnye/brand_enigma/",
+      "current_target": "/catalog/tostery-professionalnye/mec/",
+      "new_target": "/catalog/tostery-professionalnye/enigma/"
+    },
+    {
+      "line": 2507,
+      "source": "/catalog/tostery-professionalnye/brand_amitek/",
+      "current_target": "/catalog/tostery-professionalnye/sirman/",
+      "new_target": "/catalog/tostery-professionalnye/amitek/"
+    },
+    {
+      "line": 2510,
+      "source": "/catalog/tostery-professionalnye/brand_fimar/",
+      "current_target": "/catalog/tostery-professionalnye/enigma/",
+      "new_target": "/catalog/tostery-professionalnye/fimar/"
+    },
+    {
+      "line": 2513,
+      "source": "/catalog/tostery-professionalnye/brand_foodatlas/",
+      "current_target": "/catalog/tostery-professionalnye/amitek/",
+      "new_target": "/catalog/tostery-professionalnye/foodatlas/"
+    },
+    {
+      "line": 2516,
+      "source": "/catalog/tostery-professionalnye/brand_roller-grill/",
+      "current_target": "/catalog/tostery-professionalnye/fimar/",
+      "new_target": "/catalog/tostery-professionalnye/roller-grill/"
+    },
+    {
+      "line": 2519,
+      "source": "/catalog/tostery-professionalnye/brand_waring/",
+      "current_target": "/catalog/tostery-professionalnye/foodatlas/",
+      "new_target": "/catalog/tostery-professionalnye/waring/"
+    },
+    {
+      "line": 2522,
+      "source": "/catalog/tostery-professionalnye/brand_fiamma/",
+      "current_target": "/catalog/tostery-professionalnye/roller-grill/",
+      "new_target": "/catalog/tostery-professionalnye/fiamma/"
+    },
+    {
+      "line": 2525,
+      "source": "/catalog/tostery-professionalnye/brand_vortmax/",
+      "current_target": "/catalog/tostery-professionalnye/waring/",
+      "new_target": "/catalog/tostery-professionalnye/vortmax/"
+    },
+    {
+      "line": 2528,
+      "source": "/catalog/tostery-professionalnye/brand_kocateq/",
+      "current_target": "/catalog/tostery-professionalnye/fiamma/",
+      "new_target": "/catalog/tostery-professionalnye/kocateq/"
+    },
+    {
+      "line": 2531,
+      "source": "/catalog/tostery-professionalnye/brand_master-lee/",
+      "current_target": "/catalog/tostery-professionalnye/vortmax/",
+      "new_target": "/catalog/tostery-professionalnye/master-lee/"
+    },
+    {
+      "line": 2534,
+      "source": "/catalog/tostery-professionalnye/brand_airhot/",
+      "current_target": "/catalog/tostery-professionalnye/kocateq/",
+      "new_target": "/catalog/tostery-professionalnye/airhot/"
+    },
+    {
+      "line": 2537,
+      "source": "/catalog/tostery-professionalnye/brand_inoksan/",
+      "current_target": "/catalog/tostery-professionalnye/master-lee/",
+      "new_target": "/catalog/tostery-professionalnye/inoksan/"
+    },
+    {
+      "line": 2540,
+      "source": "/catalog/tostery-professionalnye/brand_tecnoinox/",
+      "current_target": "/catalog/tostery-professionalnye/airhot/",
+      "new_target": "/catalog/tostery-professionalnye/tecnoinox/"
+    },
+    {
+      "line": 2546,
+      "source": "/catalog/tostery-professionalnye/brand_hatco/",
+      "current_target": "/catalog/tostery-professionalnye/tecnoinox/",
+      "new_target": "/catalog/tostery-professionalnye/hatco/"
+    },
+    {
+      "line": 2549,
+      "source": "/catalog/tostery-professionalnye/brand_prince-castle/",
+      "current_target": "/catalog/tostery-professionalnye/lincat/",
+      "new_target": "/catalog/tostery-professionalnye/prince-castle/"
+    },
+    {
+      "line": 2552,
+      "source": "/catalog/tostery-vertikalnye/brand_eksi/",
+      "current_target": "/catalog/tostery-vertikalnye/bartscher/",
+      "new_target": "/catalog/tostery-vertikalnye/eksi/"
+    },
+    {
+      "line": 2555,
+      "source": "/catalog/tostery-vertikalnye/brand_starfood/",
+      "current_target": "/catalog/tostery-vertikalnye/gastrorag/",
+      "new_target": "/catalog/tostery-vertikalnye/starfood/"
+    },
+    {
+      "line": 2558,
+      "source": "/catalog/tostery-vertikalnye/brand_hurakan/",
+      "current_target": "/catalog/tostery-vertikalnye/eksi/",
+      "new_target": "/catalog/tostery-vertikalnye/hurakan/"
+    },
+    {
+      "line": 2561,
+      "source": "/catalog/tostery-vertikalnye/brand_viatto/",
+      "current_target": "/catalog/tostery-vertikalnye/starfood/",
+      "new_target": "/catalog/tostery-vertikalnye/viatto/"
+    },
+    {
+      "line": 2564,
+      "source": "/catalog/tostery-vertikalnye/brand_waring/",
+      "current_target": "/catalog/tostery-vertikalnye/hurakan/",
+      "new_target": "/catalog/tostery-vertikalnye/waring/"
+    },
+    {
+      "line": 2567,
+      "source": "/catalog/tostery-vertikalnye/brand_airhot/",
+      "current_target": "/catalog/tostery-vertikalnye/viatto/",
+      "new_target": "/catalog/tostery-vertikalnye/airhot/"
+    },
+    {
+      "line": 2573,
+      "source": "/catalog/tostery-gorizontalnye/brand_mec/",
+      "current_target": "/catalog/tostery-gorizontalnye/gastrorag/",
+      "new_target": "/catalog/tostery-gorizontalnye/mec/"
+    },
+    {
+      "line": 2579,
+      "source": "/catalog/tostery-gorizontalnye/brand_sirman/",
+      "current_target": "/catalog/tostery-gorizontalnye/mec/",
+      "new_target": "/catalog/tostery-gorizontalnye/sirman/"
+    },
+    {
+      "line": 2585,
+      "source": "/catalog/tostery-gorizontalnye/brand_amitek/",
+      "current_target": "/catalog/tostery-gorizontalnye/sirman/",
+      "new_target": "/catalog/tostery-gorizontalnye/amitek/"
+    },
+    {
+      "line": 2588,
+      "source": "/catalog/tostery-gorizontalnye/brand_fimar/",
+      "current_target": "/catalog/tostery-gorizontalnye/enigma/",
+      "new_target": "/catalog/tostery-gorizontalnye/fimar/"
+    },
+    {
+      "line": 2591,
+      "source": "/catalog/tostery-gorizontalnye/brand_foodatlas/",
+      "current_target": "/catalog/tostery-gorizontalnye/amitek/",
+      "new_target": "/catalog/tostery-gorizontalnye/foodatlas/"
+    },
+    {
+      "line": 2594,
+      "source": "/catalog/tostery-gorizontalnye/brand_roller-grill/",
+      "current_target": "/catalog/tostery-gorizontalnye/fimar/",
+      "new_target": "/catalog/tostery-gorizontalnye/roller-grill/"
+    },
+    {
+      "line": 2597,
+      "source": "/catalog/tostery-gorizontalnye/brand_fiamma/",
+      "current_target": "/catalog/tostery-gorizontalnye/foodatlas/",
+      "new_target": "/catalog/tostery-gorizontalnye/fiamma/"
+    },
+    {
+      "line": 2600,
+      "source": "/catalog/tostery-gorizontalnye/brand_vortmax/",
+      "current_target": "/catalog/tostery-gorizontalnye/roller-grill/",
+      "new_target": "/catalog/tostery-gorizontalnye/vortmax/"
+    },
+    {
+      "line": 2603,
+      "source": "/catalog/tostery-gorizontalnye/brand_tecnoinox/",
+      "current_target": "/catalog/tostery-gorizontalnye/fiamma/",
+      "new_target": "/catalog/tostery-gorizontalnye/tecnoinox/"
+    },
+    {
+      "line": 2606,
+      "source": "/catalog/tostery-gorizontalnye/brand_prince-castle/",
+      "current_target": "/catalog/tostery-gorizontalnye/vortmax/",
+      "new_target": "/catalog/tostery-gorizontalnye/prince-castle/"
+    },
+    {
+      "line": 2609,
+      "source": "/catalog/tostery-gorizontalnye/brand_viatto/",
+      "current_target": "/catalog/tostery-gorizontalnye/tecnoinox/",
+      "new_target": "/catalog/tostery-gorizontalnye/viatto/"
+    },
+    {
+      "line": 2612,
+      "source": "/catalog/tostery-konveyernye/brand_enigma/",
+      "current_target": "/catalog/tostery-konveyernye/gastrorag/",
+      "new_target": "/catalog/tostery-konveyernye/enigma/"
+    },
+    {
+      "line": 2615,
+      "source": "/catalog/tostery-konveyernye/brand_master-lee/",
+      "current_target": "/catalog/tostery-konveyernye/kocateq/",
+      "new_target": "/catalog/tostery-konveyernye/master-lee/"
+    },
+    {
+      "line": 2618,
+      "source": "/catalog/tostery-konveyernye/brand_hurakan/",
+      "current_target": "/catalog/tostery-konveyernye/enigma/",
+      "new_target": "/catalog/tostery-konveyernye/hurakan/"
+    },
+    {
+      "line": 2621,
+      "source": "/catalog/tostery-konveyernye/brand_airhot/",
+      "current_target": "/catalog/tostery-konveyernye/master-lee/",
+      "new_target": "/catalog/tostery-konveyernye/airhot/"
+    },
+    {
+      "line": 2624,
+      "source": "/catalog/tostery-konveyernye/brand_eksi/",
+      "current_target": "/catalog/tostery-konveyernye/hurakan/",
+      "new_target": "/catalog/tostery-konveyernye/eksi/"
+    },
+    {
+      "line": 2627,
+      "source": "/catalog/tostery-konveyernye/brand_bartscher/",
+      "current_target": "/catalog/tostery-konveyernye/airhot/",
+      "new_target": "/catalog/tostery-konveyernye/bartscher/"
+    },
+    {
+      "line": 2630,
+      "source": "/catalog/tostery-konveyernye/brand_vortmax/",
+      "current_target": "/catalog/tostery-konveyernye/eksi/",
+      "new_target": "/catalog/tostery-konveyernye/vortmax/"
+    },
+    {
+      "line": 2636,
+      "source": "/catalog/tostery-konveyernye/brand_inoksan/",
+      "current_target": "/catalog/tostery-konveyernye/vortmax/",
+      "new_target": "/catalog/tostery-konveyernye/inoksan/"
+    },
+    {
+      "line": 2639,
+      "source": "/catalog/tostery-konveyernye/brand_sirman/",
+      "current_target": "/catalog/tostery-konveyernye/starfood/",
+      "new_target": "/catalog/tostery-konveyernye/sirman/"
+    },
+    {
+      "line": 2645,
+      "source": "/catalog/tostery-konveyernye/brand_roller-grill/",
+      "current_target": "/catalog/tostery-konveyernye/sirman/",
+      "new_target": "/catalog/tostery-konveyernye/roller-grill/"
+    },
+    {
+      "line": 2651,
+      "source": "/catalog/tostery-konveyernye/brand_hatco/",
+      "current_target": "/catalog/tostery-konveyernye/roller-grill/",
+      "new_target": "/catalog/tostery-konveyernye/hatco/"
+    },
+    {
+      "line": 2657,
+      "source": "/catalog/vapo-grili/brand_arris/",
+      "current_target": "/catalog/vapo-grili/vortmax/",
+      "new_target": "/catalog/vapo-grili/arris/"
+    },
+    {
+      "line": 2660,
+      "source": "/catalog/vapo-grili/brand_vulkan/",
+      "current_target": "/catalog/vapo-grili/apach/",
+      "new_target": "/catalog/vapo-grili/vulkan/"
+    },
+    {
+      "line": 3845,
+      "source": "/catalog/rotacionnye-pechi/brand_kocateq/",
+      "current_target": "/catalog/pechi-podovye-hlebopekarnye/kocateq/",
+      "new_target": "/catalog/rotacionnye-pechi/kocateq/"
+    },
+    {
+      "line": 3848,
+      "source": "/catalog/rotacionnye-pechi/brand_wlbake/",
+      "current_target": "/catalog/pechi-podovye-hlebopekarnye/wlbake/",
+      "new_target": "/catalog/rotacionnye-pechi/wlbake/"
+    },
+    {
+      "line": 3869,
+      "source": "/catalog/tostery-professionalnye/brand_bartscher/",
+      "current_target": "/catalog/khlebopekarnye-yarusnye-pechi/bartscher/",
+      "new_target": "/catalog/tostery-professionalnye/bartscher/"
+    },
+    {
+      "line": 3872,
+      "source": "/catalog/tostery-professionalnye/brand_gastrorag/",
+      "current_target": "/catalog/pechi-khlebopekarnye-konveyernye/gastrorag/",
+      "new_target": "/catalog/tostery-professionalnye/gastrorag/"
+    },
+    {
+      "line": 3878,
+      "source": "/catalog/tostery-vertikalnye/brand_bartscher/",
+      "current_target": "/catalog/tostery-professionalnye/bartscher/",
+      "new_target": "/catalog/tostery-vertikalnye/bartscher/"
+    }
+  ],
+  "blocked_brand_redirect_candidates": [
+    {
+      "line": 2474,
+      "source": "/catalog/pechi-podovye-hlebopekarnye/brand_resto-italia/",
+      "current_target": "/catalog/pechi-podovye-hlebopekarnye/miratek/",
+      "same_brand_target": "/catalog/pechi-podovye-hlebopekarnye/resto-italia/",
+      "reason": "same_brand_target_is_not_200"
+    },
+    {
+      "line": 2543,
+      "source": "/catalog/tostery-professionalnye/brand_lincat/",
+      "current_target": "/catalog/tostery-professionalnye/inoksan/",
+      "same_brand_target": "/catalog/tostery-professionalnye/lincat/",
+      "reason": "same_brand_target_is_not_200"
+    },
+    {
+      "line": 2570,
+      "source": "/catalog/tostery-vertikalnye/brand_lincat/",
+      "current_target": "/catalog/tostery-vertikalnye/waring/",
+      "same_brand_target": "/catalog/tostery-vertikalnye/lincat/",
+      "reason": "same_brand_target_is_not_200"
+    },
+    {
+      "line": 2576,
+      "source": "/catalog/tostery-gorizontalnye/brand_bartscher/",
+      "current_target": "/catalog/tostery-gorizontalnye/hurakan/",
+      "same_brand_target": "/catalog/tostery-gorizontalnye/bartscher/",
+      "reason": "same_brand_target_is_not_200"
+    },
+    {
+      "line": 2582,
+      "source": "/catalog/tostery-gorizontalnye/brand_enigma/",
+      "current_target": "/catalog/tostery-gorizontalnye/bartscher/",
+      "same_brand_target": "/catalog/tostery-gorizontalnye/enigma/",
+      "reason": "same_brand_target_is_not_200"
+    },
+    {
+      "line": 2633,
+      "source": "/catalog/tostery-konveyernye/brand_starfood/",
+      "current_target": "/catalog/tostery-konveyernye/bartscher/",
+      "same_brand_target": "/catalog/tostery-konveyernye/starfood/",
+      "reason": "same_brand_target_is_not_200"
+    },
+    {
+      "line": 2642,
+      "source": "/catalog/tostery-konveyernye/brand_waring/",
+      "current_target": "/catalog/tostery-konveyernye/inoksan/",
+      "same_brand_target": "/catalog/tostery-konveyernye/waring/",
+      "reason": "same_brand_target_is_not_200"
+    },
+    {
+      "line": 2648,
+      "source": "/catalog/tostery-konveyernye/brand_lincat/",
+      "current_target": "/catalog/tostery-konveyernye/waring/",
+      "same_brand_target": "/catalog/tostery-konveyernye/lincat/",
+      "reason": "same_brand_target_is_not_200"
+    },
+    {
+      "line": 2654,
+      "source": "/catalog/tostery-konveyernye/brand_prince-castle/",
+      "current_target": "/catalog/tostery-konveyernye/lincat/",
+      "same_brand_target": "/catalog/tostery-konveyernye/prince-castle/",
+      "reason": "same_brand_target_is_not_200"
+    },
+    {
+      "line": 2663,
+      "source": "/catalog/pechi-khlebopekarnye/brand_foodatlas/",
+      "current_target": "/catalog/vapo-grili/arris/",
+      "same_brand_target": "/catalog/pechi-khlebopekarnye/foodatlas/",
+      "reason": "same_brand_target_is_not_200"
+    },
+    {
+      "line": 3866,
+      "source": "/catalog/pechi-khlebopekarnye-konveyernye/brand_stangrad/",
+      "current_target": "/catalog/khlebopekarnye-yarusnye-pechi/stangrad/",
+      "same_brand_target": "/catalog/pechi-khlebopekarnye-konveyernye/stangrad/",
+      "reason": "same_brand_target_is_not_200"
+    },
+    {
+      "line": 3881,
+      "source": "/catalog/testomesilnye-mashiny-professionalnye/brand_torgmash-perm/",
+      "current_target": "/catalog/testomesilnye-mashiny-professionalnye/torgmash/",
+      "same_brand_target": "/catalog/testomesilnye-mashiny-professionalnye/torgmash-perm/",
+      "reason": "same_brand_target_is_not_200"
+    },
+    {
+      "line": 3884,
+      "source": "/catalog/farshemesy/brand_torgmash-perm/",
+      "current_target": "/catalog/farshemesy/torgmash/",
+      "same_brand_target": "/catalog/farshemesy/torgmash-perm/",
+      "reason": "same_brand_target_is_not_200"
+    },
+    {
+      "line": 4433,
+      "source": "/catalog/gladilnye-pressy/brand_elitex/",
+      "current_target": "/catalog/gladilnye-pressy/eliteks/",
+      "same_brand_target": "/catalog/gladilnye-pressy/elitex/",
+      "reason": "same_brand_target_is_not_200"
+    },
+    {
+      "line": 4436,
+      "source": "/catalog/skovorody-oprokidyvaemye-elektricheskie/brand_bertos/",
+      "current_target": "/catalog/skovorody-oprokidyvaemye-elektricheskie/berto-s/",
+      "same_brand_target": "/catalog/skovorody-oprokidyvaemye-elektricheskie/bertos/",
+      "reason": "same_brand_target_is_not_200"
+    }
+  ],
+  "manual_items": [
+    {
+      "source": "/info/brands/amitek/?section_id=1077",
+      "current_target": "/catalog/professionalnyy-slayser-dlya-narezki-produktov/amitek/",
+      "reason": "active redirects.php target is 404; no equivalent landing is present in sitemap"
+    },
+    {
+      "reason": "server 5xx and robots.txt outages require access/error logs before code changes"
+    },
+    {
+      "reason": "sitemap generation is controlled by Bitrix/module configuration absent from the snapshot"
+    }
+  ]
+}

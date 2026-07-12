@@ -1,0 +1,86 @@
+--- a/local/templates/aspro_next/header.php
++++ b/local/templates/aspro_next/header.php
+@@ -94,21 +94,45 @@
+         $APPLICATION->ShowHeadScripts();
+         ?>
+ 
+-        <?$APPLICATION->ShowMeta('canonical')?>
+-
+         <?
+-        if ($_REQUEST['PAGEN_1']) {
+-            global $APPLICATION;
+-            $APPLICATION->AddHeadString('<link href="https://'.$_SERVER['HTTP_HOST'].$APPLICATION->sDirPath.'" rel="canonical" />',true);
++        // Единственный серверный canonical. Для валидной пагинации сохраняем
++        // только параметры PAGEN_N; сортировки и служебные параметры исключаем.
++        $canonicalPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
++        if (!is_string($canonicalPath) || $canonicalPath === '') {
++            $canonicalPath = '/';
++        }
++        if ($canonicalPath[0] !== '/') {
++            $canonicalPath = '/'.$canonicalPath;
++        }
++
++        $canonicalPagination = [];
++        foreach ($_GET as $key => $value) {
++            if (
++                preg_match('/^PAGEN_\d+$/', (string)$key)
++                && is_scalar($value)
++                && ctype_digit((string)$value)
++                && (int)$value > 1
++            ) {
++                $canonicalPagination[(string)$key] = (int)$value;
++            }
++        }
++        ksort($canonicalPagination, SORT_NATURAL);
++
++        $canonicalUrl = 'https://restomoda.ru'.$canonicalPath;
++        if ($canonicalPagination) {
++            $canonicalUrl .= '?'.http_build_query(
++                $canonicalPagination,
++                '',
++                '&',
++                PHP_QUERY_RFC3986
++            );
+         }
+         ?>
+-
+-        <?
+-        if ( !isset($_REQUEST['PAGEN_1'])) { // CSite::InDir('/info/brands/') && ?>
+-            <link href="<?=$APPLICATION->GetCurDir();?>" rel="canonical" />
+-        <?
+-        }
+-        ?>
++        <link rel="canonical" href="<?=htmlspecialchars(
++            $canonicalUrl,
++            ENT_QUOTES | ENT_SUBSTITUTE,
++            LANG_CHARSET
++        )?>" />
+ 
+ 
+         <?$APPLICATION->SetAdditionalCSS(SITE_TEMPLATE_PATH.'/css/lightbox.css');?>
+--- a/local/templates/aspro_next/footer.php
++++ b/local/templates/aspro_next/footer.php
+@@ -163,13 +163,6 @@
+                 $('.ul-list-menu').toggleClass('open');
+             });
+ 
+-            // Canonical
+-            let metaCanonical = $('meta[name="canonical"]').attr("content");
+-            if (metaCanonical) {
+-                $('link[rel="canonical"]').attr("href", metaCanonical);
+-            }
+-            console.log(metaCanonical);
+-
+             // Цели Яндекс.Метрики
+             $('.btn.one_click').click(function () {
+                 if (typeof ym === 'function') {
+--- a/local/templates/aspro_next/components/bitrix/system.pagenavigation/.default/template.php
++++ b/local/templates/aspro_next/components/bitrix/system.pagenavigation/.default/template.php
+@@ -50,7 +50,6 @@
+ 					$url = ($page ? '?'.$strNavQueryString.'PAGEN_'.$arResult["NavNum"].'='.$page : $strNavQueryStringFull);?>
+ 					<li class="flex-nav-prev "><a href="<?=$arResult["sUrlPath"]?><?=$url?>" class="flex-prev"></a></li>
+ 					<link rel="prev" href="<?=$arResult["sUrlPath"].$url?>" />
+-					<link rel="canonical" href="<?=$arResult["sUrlPath"]?>" />
+ 				<?endif;?>
+ 				<?if(!$bNextDisabled):?>
+ 					<li class="flex-nav-next "><a href="<?=$arResult["sUrlPath"]?>?<?=$strNavQueryString?>PAGEN_<?=$arResult["NavNum"]?>=<?=($arResult["NavPageNomer"]+1)?>" class="flex-next"></a></li>

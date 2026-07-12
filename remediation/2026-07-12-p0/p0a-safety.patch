@@ -1,0 +1,22 @@
+--- a/local/templates/aspro_next/header.php
++++ b/local/templates/aspro_next/header.php
+@@ -28,7 +28,6 @@
+ }
+ ?>
+ 
+-<?header('Last-Modified: '.gmdate('D, d M Y H:i:s T', time() - 60));?>
+     <!DOCTYPE html>
+ <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?=LANGUAGE_ID?>" lang="<?=LANGUAGE_ID?>" <?=($htmlClass ? 'class="'.$htmlClass.'"' : '')?>>
+     <head>
+--- a/local/php_interface/init.php
++++ b/local/php_interface/init.php
+@@ -1448,7 +1448,8 @@
+                 "Данные нового пользователя:\n" .
+                 "  ID: {$finalUserId}\n" .
+                 "  Логин: {$newLogin}\n" .
+-                "  Пароль: {$newPassword}\n\n";
++                "  Пароль не сохраняется. Для доступа используйте " .
++                "штатное восстановление пароля.\n\n";
+         } else {
+             // Если создать пользователя не удалось — падаем на администратора
+             $finalUserId = $adminUserId;
